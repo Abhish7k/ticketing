@@ -10,6 +10,7 @@ import com.ticketing.inventoryservice.entity.Event;
 import com.ticketing.inventoryservice.entity.Venue;
 import com.ticketing.inventoryservice.repository.EventRepository;
 import com.ticketing.inventoryservice.repository.VenueRepository;
+import com.ticketing.inventoryservice.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,51 +18,51 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InventoryService {
 
-    private final EventRepository eventRepository;
-    private final VenueRepository venueRepository;
+        private final EventRepository eventRepository;
+        private final VenueRepository venueRepository;
 
-    public List<EventInventoryResponse> getAllEvents() {
-        List<Event> events = eventRepository.findAll();
+        public List<EventInventoryResponse> getAllEvents() {
+                List<Event> events = eventRepository.findAll();
 
-        List<EventInventoryResponse> responses = events.stream()
-                .map(event -> EventInventoryResponse.builder()
-                        .eventId(event.getId())
-                        .event(event.getName())
-                        .capacity(event.getLeftCapacity())
-                        .venue(event.getVenue())
-                        .ticketPrice(event.getTicketPrice())
-                        .build())
-                .collect(Collectors.toList());
+                List<EventInventoryResponse> responses = events.stream()
+                                .map(event -> EventInventoryResponse.builder()
+                                                .eventId(event.getId())
+                                                .event(event.getName())
+                                                .capacity(event.getLeftCapacity())
+                                                .venue(event.getVenue())
+                                                .ticketPrice(event.getTicketPrice())
+                                                .build())
+                                .collect(Collectors.toList());
 
-        return responses;
-    }
+                return responses;
+        }
 
-    public VenueInventoryResponse getVenueById(Long venueId) {
-        Venue venue = venueRepository.findById(venueId)
-                .orElseThrow(() -> new RuntimeException("Venue not found"));
+        public VenueInventoryResponse getVenueById(Long venueId) {
+                Venue venue = venueRepository.findById(venueId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Venue not found"));
 
-        VenueInventoryResponse response = VenueInventoryResponse.builder()
-                .venueId(venue.getId())
-                .venueName(venue.getName())
-                .leftCapacity(venue.getTotalCapacity())
-                .build();
+                VenueInventoryResponse response = VenueInventoryResponse.builder()
+                                .venueId(venue.getId())
+                                .venueName(venue.getName())
+                                .leftCapacity(venue.getTotalCapacity())
+                                .build();
 
-        return response;
-    }
+                return response;
+        }
 
-    public EventInventoryResponse getEventById(Long eventId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+        public EventInventoryResponse getEventById(Long eventId) {
+                Event event = eventRepository.findById(eventId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 
-        EventInventoryResponse response = EventInventoryResponse.builder()
-                .eventId(event.getId())
-                .event(event.getName())
-                .capacity(event.getLeftCapacity())
-                .venue(event.getVenue())
-                .ticketPrice(event.getTicketPrice())
-                .build();
+                EventInventoryResponse response = EventInventoryResponse.builder()
+                                .eventId(event.getId())
+                                .event(event.getName())
+                                .capacity(event.getLeftCapacity())
+                                .venue(event.getVenue())
+                                .ticketPrice(event.getTicketPrice())
+                                .build();
 
-        return response;
-    }
+                return response;
+        }
 
 }
