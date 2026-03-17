@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ticketing.bookingservice.dto.BookingRequest;
 import com.ticketing.bookingservice.dto.BookingResponse;
+import com.ticketing.bookingservice.dto.CustomerRequest;
+import com.ticketing.bookingservice.entity.Customer;
 import com.ticketing.bookingservice.service.BookingService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class BookingController {
 
@@ -20,7 +22,17 @@ public class BookingController {
 
     @PostMapping("/bookings")
     public BookingResponse createBooking(@RequestBody BookingRequest bookingRequest) {
+
         return bookingService.createBooking(bookingRequest);
+
+    }
+
+    // create new customer
+    @PostMapping("/customers")
+    public Customer createCustomer(@RequestBody CustomerRequest customerRequest) {
+
+        return bookingService.createCustomer(customerRequest);
+
     }
 
 }
