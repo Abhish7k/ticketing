@@ -1,7 +1,5 @@
 package com.ticketing.bookingservice.service;
 
-import java.math.BigDecimal;
-
 import org.springframework.stereotype.Service;
 
 import com.ticketing.bookingservice.client.InventoryClient;
