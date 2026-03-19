@@ -17,9 +17,11 @@ import com.ticketing.inventoryservice.repository.EventRepository;
 import com.ticketing.inventoryservice.repository.VenueRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class InventoryService {
 
         private final EventRepository eventRepository;
@@ -81,6 +83,26 @@ public class InventoryService {
                 Event event = inventoryMapper.toEvent(req, venue);
 
                 event = eventRepository.save(event);
+
+                return inventoryMapper.toEventResponse(event);
+
+        }
+
+        // update inventory capacity
+        public EventInventoryResponse updateEventCapacity(Long eventId, Long ticketsBooked) {
+
+                Event event = eventRepository.findById(eventId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+
+                if (event.getLeftCapacity() < ticketsBooked) {
+                        throw new IllegalArgumentException("Not enough capacity");
+                }
+
+                event.setLeftCapacity(event.getLeftCapacity() - ticketsBooked);
+
+                event = eventRepository.save(event);
+
+                log.info("Event capacity updated for eventId: {} deducting tickets: {}", eventId, ticketsBooked);
 
                 return inventoryMapper.toEventResponse(event);
 
